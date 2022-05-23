@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "260621955298",
+    "project_id": "cryptic-album-334611",
+    "storage_bucket": "cryptic-album-334611.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:260621955298:android:a5e8607cb1d91aa407aebb",
+        "android_client_info": {
+          "package_name": "com.nativetask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "260621955298-dfugcg5simr5av3vf37bc0iaub9hs09s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbsVKMn7Cjf83QVkxghfi2lGXwY6JkeMI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "260621955298-dfugcg5simr5av3vf37bc0iaub9hs09s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:260621955298:android:a2c15d091cd0b23c07aebb",
+        "android_client_info": {
+          "package_name": "com.stemtask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "260621955298-dfugcg5simr5av3vf37bc0iaub9hs09s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbsVKMn7Cjf83QVkxghfi2lGXwY6JkeMI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "260621955298-dfugcg5simr5av3vf37bc0iaub9hs09s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
