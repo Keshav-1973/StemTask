@@ -1,34 +1,90 @@
 //import liraries
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, NativeModules, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-
-
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, NativeModules, Image, TouchableOpacity, TouchableWithoutFeedback, PermissionsAndroid, Alert } from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
+import Snackbar from 'react-native-snackbar';
+import { useNetInfo } from "@react-native-community/netinfo";
 
 const { ImagePickerModule } = NativeModules;
 
-const NativeComp = () => {
 
-    const [image, setImage] = useState("")
+
+const hehe = { "details": { "bssid": "02:00:00:00:00:00", "frequency": 2447, "ipAddress": "192.168.43.246", "isConnectionExpensive": true, "strength": 99, "subnet": "255.255.255.255" }, "isConnected": true, "isInternetReachable": true, "isWifiEnabled": true, "type": "wifi" }
+
+const NativeComp = () => {
+    const [data, setData] = useState({ img: undefined, permission: false })
+    const netInfo = useNetInfo();
+
+
+    const requestStoragePermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                setData(prev => ({ ...prev, permission: true }))
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
 
     const handleOnPressDownload = () => {
-        ImagePickerModule.onDownload()
+        if (!netInfo.isConnected) {
+            Snackbar.show({
+                text: 'No Internet Connection',
+                duration: Snackbar.LENGTH_LONG
+            })
+        }
+
+
+        if (data.permission) {
+            ImagePickerModule.onDownload()
+        }
+        else {
+            Alert.alert(
+                "Alert",
+                "Storage Permission has been denied. Go to Settings and allow permissions",
+                [
+                    {
+                        text: "Cancel",
+                    },
+                    {
+                        text: "OK",
+                    },
+                ],
+                { cancelable: false }
+            );
+        }
+
 
     };
     const handleOnPressChoose = async () => {
         try {
-            const data = await ImagePickerModule.onPickImage();
-            console.log("promise", data);
-            setImage(data)
+            const uri = await ImagePickerModule.onPickImage();
+            setData(prev => ({ ...prev, img: uri }))
+
         } catch (e) {
             console.error(e);
         }
     };
     const handleOnPressUpload = () => {
-        ImagePickerModule.onUpload(image)
+
+        if (!netInfo.isConnected) {
+            Snackbar.show({
+                text: 'No Internet Connection',
+                duration: Snackbar.LENGTH_LONG
+            })
+        } else {
+            ImagePickerModule.onUpload(data.img)
+        }
 
     };
 
-
+    useEffect(() => {
+        requestStoragePermission();
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -37,14 +93,14 @@ const NativeComp = () => {
             </View>
 
             <View style={{ marginTop: 100 }}>
-                {image == "" ?
+                {data.img == undefined ?
                     <TouchableWithoutFeedback onPress={() => handleOnPressChoose()} >
                         <Image style={{ width: 200, height: 200, alignSelf: "center" }} source={require('../images/cloud-2044823_1280.png')} />
                     </TouchableWithoutFeedback>
 
                     :
                     <View style={{ height: 200, width: 200, alignSelf: "center" }}>
-                        <TouchableWithoutFeedback onPress={() => { setImage("") }}>
+                        <TouchableWithoutFeedback onPress={() => { setData("") }}>
                             <Image source={require('../images/new.png')} style={{ width: 30, height: 30, alignSelf: "flex-end", position: "absolute", zIndex: 2, top: -3 }} />
                         </TouchableWithoutFeedback>
 
@@ -52,7 +108,7 @@ const NativeComp = () => {
                             style={{ width: '100%', height: "100%", alignSelf: "center", resizeMode: "stretch" }}
                             source={{
                                 uri:
-                                    image
+                                    data.img
                             }}
                         />
                     </View>
@@ -60,14 +116,14 @@ const NativeComp = () => {
             </View>
 
             <View style={{ width: "100%", alignItems: "center" }}>
-                {image == "" ? <TouchableOpacity
+                {data.img == undefined ? <TouchableOpacity
                     onPress={() => handleOnPressChoose()}>
                     <Text style={{ fontSize: 16, fontWeight: "bold" }}>
                         Choose a File to Upload
                     </Text>
                 </TouchableOpacity> : null}
 
-                {image == "" ? null : <TouchableOpacity style={{ backgroundColor: "#db2066", width: 90, height: 30, justifyContent: "center", alignItems: "center", marginTop: 20 }}
+                {data.img == undefined ? null : <TouchableOpacity style={{ backgroundColor: "#db2066", width: 90, height: 30, justifyContent: "center", alignItems: "center", marginTop: 20 }}
                     onPress={() => handleOnPressUpload()}>
                     <Text style={{ fontSize: 16, fontWeight: "bold", color: "white" }}>
                         UPLOAD
@@ -82,6 +138,13 @@ const NativeComp = () => {
                     DOWNLOAD
                 </Text>
             </TouchableOpacity>
+
+            {netInfo.isConnected == false ? Snackbar.show({
+                text: 'No Internet Connection',
+                duration: Snackbar.LENGTH_LONG
+            }) : Snackbar.dismiss()
+            }
+
         </View>
     );
 };
