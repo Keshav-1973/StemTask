@@ -9,7 +9,6 @@ const { ImagePickerModule } = NativeModules;
 
 
 
-const hehe = { "details": { "bssid": "02:00:00:00:00:00", "frequency": 2447, "ipAddress": "192.168.43.246", "isConnectionExpensive": true, "strength": 99, "subnet": "255.255.255.255" }, "isConnected": true, "isInternetReachable": true, "isWifiEnabled": true, "type": "wifi" }
 
 const NativeComp = () => {
     const [data, setData] = useState({ img: undefined, permission: false })
